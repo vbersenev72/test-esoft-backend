@@ -1,10 +1,14 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const authRouter = require('./src/authRouter')
 
-const PORT = 5000
+const PORT = process.env.PORT || 5000
 const db = 'mongodb+srv://root:root@cluster0.nlikgpa.mongodb.net/test'
 
 const app = express()
+
+app.use(express.json())
+app.use('/auth', authRouter)
 
 const StartServer = async () => {
     try {
