@@ -2,7 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 const PORT = 5000
-const db = 'mongodb://127.0.0.1:27017/2222?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.8.0'
+const db = 'mongodb+srv://root:root@cluster0.nlikgpa.mongodb.net/test'
 
 const app = express()
 
