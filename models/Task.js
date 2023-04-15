@@ -1,14 +1,14 @@
 const { Schema, model } = require('mongoose')
 
 const Task = new Schema({
-    title: {type: String, required: true},
-    des: {type: String, required: true},
-    dateFinish: {type: String, required: true},
-    dateCreate: {type: String, required: true},
-    datePut: {type: String, required: true},
-    priority: {type: String, required: true},
-    status: {type: String, required: true},
-    creator: {type: String, required: true},
+    title:  String,
+    des:  String,
+    dateFinish:  String,
+    dateCreate:  String,
+    datePut:  String,
+    priority:  String,
+    status:  String,
+    creator: String,
 })
 
 module.exports = model('Task', Task)
