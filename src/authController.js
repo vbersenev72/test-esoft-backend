@@ -30,7 +30,7 @@ class authController {
             const user = new User({name, lastname, username, password: hashPassword}) // создали пользователя в соответствии со схемой
 
             await user.save() // сохранили пользователя в бд
-            res.json({message: 'Пользователь успешно зарегистрирован', response: user})
+            res.json({message: 'Пользователь успешно зарегистрирован, войдите', response: user})
 
         } catch (error) {
             console.log(error);
