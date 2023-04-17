@@ -2,6 +2,7 @@ const Router = require('express')
 const router = new Router()
 const authController = require('./authController')
 const {check} = require('express-validator')
+const authMiddleware = require('../middleware/auth.middleware')
 
 router.post('/registration',[
 		check('username', 'Имя пользователя не может быть пустым').notEmpty(),
@@ -15,6 +16,11 @@ router.post('/login',[
 
 router.post('/create', authController.createTask)
 
+router.post('/auth', authMiddleware, authController.auth)
+
 router.post('/users', authController.getUsers)
+router.post('/tasks', authController.getTasks)
+
+router.post('/tasksuser', authController.getTasksUser)
 
 module.exports = router

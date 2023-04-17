@@ -9,6 +9,7 @@ const Task = new Schema({
     priority:  String,
     status:  String,
     creator: String,
+    holder: String
 })
 
 module.exports = model('Task', Task)

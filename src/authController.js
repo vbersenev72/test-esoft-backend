@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const {validationResult} = require('express-validator')
 const {secret} = require('./config')
-
+const authMiddleware = require('../middleware/auth.middleware')
 
 const generateAccessToken = (id) => {
     const payload = {id}
@@ -46,19 +46,39 @@ class authController {
             if (!candidate) { // если не нашли
                 return res.status(400).json({message: `Пользователь ${candidate} не найден`})
             }
-           
+
             const validPassword = bcrypt.compareSync(password, candidate.password) // сравниваем введенный пароль с хешем внутри базы данных
-           
+
             if (!validPassword) {
                 return res.status(400).json({message: "Пароль неверный"}) //если пароль неверный
             }
 
             const token = generateAccessToken(candidate._id) // токен содержит в себе id юзера
-            return res.json({token}) 
+            return res.json({token, candidate})
 
         } catch (error) {
             console.log(error);
             res.status(400).json({message: 'login error'})
+        }
+    }
+
+    async auth(req, res) {
+        try {
+            const user = await User.findOne({_id: req.user.id})
+            const token = jwt.sign({id: user.id}, secret, {expiresIn: "1h"})
+            return res.json({
+                token,
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    diskSpace: user.diskSpace,
+                    usedSpace: user.usedSpace,
+                    avatar: user.avatar
+                }
+            })
+        } catch (e) {
+            console.log(e)
+            res.send({message: "Server error"})
         }
     }
 
@@ -73,15 +93,45 @@ class authController {
         }
     }
 
+    async getTasks(req, res) {
+        try {
+            const tasks = await Task.find()
+            res.json(tasks)
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({message: 'error'})
+        }
+    }
+
     async createTask(req, res) {
         try {
-            const {title, des, dateFinish, dateCreate, datePut, priority, status, creator} = req.body
-            const task = new Task({title, des, dateFinish, dateCreate, datePut, priority, status, creator})
-
+            const {title, des, dateFinish, dateCreate, datePut, priority, status, creator, holder} = req.body
+            const task = new Task({title, des, dateFinish, dateCreate, datePut, priority, status, creator, holder})
             await task.save()
+
+            res.json({message: 'Задача сохранена'})
         } catch (e) {
             console.log(e)
             res.status(400).json({message: 'create task error'})
+        }
+    }
+
+    async getTasksUser(req, res) {
+        try {
+            const {token} = req.body
+            if(!token){
+                return res.status(401).json({message: 'not found jwt token'})
+            }
+
+            const decodeToken = jwt.verify(token, secret)
+            console.log(decodeToken)
+
+            const {username} = await User.find({_id: decodeToken.id}) // ищем пользователя в базе
+            const tasks = await Task.find({username}) // ищем таски для определенного пользователя
+            res.json(tasks)
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({message: 'error get tasks'})
         }
     }
 }
