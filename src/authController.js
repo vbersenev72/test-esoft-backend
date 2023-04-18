@@ -105,7 +105,15 @@ class authController {
 
     async createTask(req, res) {
         try {
-            const {title, des, dateFinish, dateCreate, datePut, priority, status, creator, holder} = req.body
+            const {title, des, dateFinish, dateCreate, datePut, priority, status, token, holder} = req.body
+
+            const creatorId = jwt.verify(token, secret)
+            console.log(creatorId)
+            const userCreator = await User.findById(creatorId.id)
+
+            const creator = userCreator.username
+            console.log(creator);
+
             const task = new Task({title, des, dateFinish, dateCreate, datePut, priority, status, creator, holder})
             await task.save()
 
@@ -132,6 +140,17 @@ class authController {
         } catch (error) {
             console.log(error);
             res.status(400).json({message: 'error get tasks'})
+        }
+    }
+
+
+    async deleteTask(req, res) {
+        try {
+            const {_id} = req.body
+            await Task.deleteOne({_id})
+            res.json({message: 'Задача удалена'})
+        } catch (error) {
+            res.status(400).json({message: 'delete task error'})
         }
     }
 }

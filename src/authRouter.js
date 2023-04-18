@@ -20,6 +20,7 @@ router.post('/auth', authMiddleware, authController.auth)
 
 router.post('/users', authController.getUsers)
 router.post('/tasks', authController.getTasks)
+router.post('/delete', authController.deleteTask)
 
 router.post('/tasksuser', authController.getTasksUser)
 
