@@ -134,8 +134,8 @@ class authController {
             const decodeToken = jwt.verify(token, secret)
             console.log(decodeToken)
 
-            const {username} = await User.find({_id: decodeToken.id}) // ищем пользователя в базе
-            const tasks = await Task.find({username}) // ищем таски для определенного пользователя
+            const {username} = await User.findById(decodeToken.id) // ищем пользователя в базе
+            const tasks = await Task.find({creator: username}) // ищем таски для определенного пользователя
             res.json(tasks)
         } catch (error) {
             console.log(error);
@@ -144,6 +144,18 @@ class authController {
     }
 
 
+    async getTaskById(req, res) {
+        try {
+
+            const {_id} = req.body
+            const task = await Task.findOne({_id})
+            res.json(task)
+
+        } catch (error) {
+            res.status(400).json({message: "error get task", error})
+        }
+    }
+
     async deleteTask(req, res) {
         try {
             const {_id} = req.body
@@ -151,6 +163,14 @@ class authController {
             res.json({message: 'Задача удалена'})
         } catch (error) {
             res.status(400).json({message: 'delete task error'})
+        }
+    }
+
+    async updateTask(req, res) {
+        try {
+
+        } catch (error) {
+            res.status(400).json({message: 'update task error'})
         }
     }
 }
