@@ -168,6 +168,10 @@ class authController {
 
     async updateTask(req, res) {
         try {
+            const {_id, title, des, holder, priority, dateFinish} = req.body
+
+            await Task.updateOne({_id}, { $set: { title, des, holder, priority, dateFinish}})
+            res.json({message: 'update successful'})
 
         } catch (error) {
             res.status(400).json({message: 'update task error'})
