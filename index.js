@@ -4,7 +4,7 @@ const authRouter = require('./src/authRouter')
 const corsMiddleware = require('./middleware/cors.Middleware')
 
 const PORT = process.env.PORT || 5000
-const db = 'mongodb+srv://root:root@cluster0.nlikgpa.mongodb.net/test'
+const db = 'database access'
 
 const app = express()
 
